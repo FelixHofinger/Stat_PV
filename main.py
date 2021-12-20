@@ -3,6 +3,7 @@ from gui import Gui
 import os
 
 import streamlit as st
+import pandas as pd
 
 #from symul8_sumo_simulator import Symul8SumoSimulator
 #from symul8_vissim_simulator import Symul8VissimSimulator
@@ -25,8 +26,7 @@ class StatistikPV_Gui():
         self._appversion = appversion
         self._appcopyrightlogos = appcopyrightlogos
 
-
-    def create(self):
+    def create(self, data_cat):
 
         # default layout
         st.set_page_config(page_title=self._apptitle, page_icon=self._appicon, layout='wide', initial_sidebar_state='auto')
@@ -43,27 +43,63 @@ class StatistikPV_Gui():
         for logo in self._appcopyrightlogos:
             st.sidebar.image(logo)
 
-        #
 
-        data_categories = ['Mobilitätsdaten - Allgemein','Mobilitätsdaten - Aktive Mobilität','Mobilitätsdaten - ÖPNV','Mobilitätsdaten - Flugverkehr', 'Energieverbrauch']
+        datacat = st.sidebar.selectbox('Kategorie', data_cat)
 
         st.title(self._apptitle)
-        st.header('2019')
-        with st.expander('2019'):
-            #
+
+        if datacat == 'Mobilitätsdaten - Allgemein':
+
+
 
             st.header('Verkehrsleistung')
-            verkehrsleistung = st.number_input('Verkehrsleistung [P-km/a]')
+            with st.expander('Verkehrsleistung'):
+
+                st.header('2019')
+                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2019 [P-km/a]')
+                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2019 [P-km/a]')
+
+                st.header('2020')
+                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2020 [P-km/a]')
+                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2020 [P-km/a]')
+
+                st.header('2021')
+                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2021[P-km/a]')
+                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2021 [P-km/a]')
+
             st.header('Modalsplit')
-            ms_car = st.slider('Modal Split - PKW [%]', 0.0, 100.0,step=0.1)
+            with st.expander('Modal-Split'):
+                st.header('2019')
+                ms_car = st.slider('Modal Split - PKW 2019[%]', 0.0, 100.0, step=0.1)
+                ms_train = st.slider('Modal Split - Zug 2019 [%]', 0.0, 100.0, step=0.1)
 
+                st.header('2020')
+                ms_car = st.slider('Modal Split - PKW 2020 [%]', 0.0, 100.0, step=0.1)
+                ms_train = st.slider('Modal Split - Zug 2020 [%]', 0.0, 100.0, step=0.1)
 
+                st.header('2021')
+                ms_car = st.slider('Modal Split - PKW 2021 [%]', 0.0, 100.0, step=0.1)
+                ms_train = st.slider('Modal Split - Zug 2021 [%]', 0.0, 100.0, step=0.1)
 
-        #for cat in data_categories:
-         #   st.header(cat)
-          #  st.expander(cat)
+            st.header('Radverkehr')
+            with st.expander('Radverkehr'):
 
+                st.header('2019')
+                graz_2019 = st.number_input('# Fahrradfahrer Graz 2019')
+                wien_2019 = st.number_input('# Fahrradfahrer Wien 2019')
 
+                st.header('2020')
+                graz_2020 = st.number_input('# Fahrradfahrer Graz 2020')
+                wien_2020 = st.number_input('# Fahrradfahrer Wien 2020')
+
+                st.header('2021')
+                graz_2021 = st.number_input('# Fahrradfahrer Graz 2021')
+                wien_2021 = st.number_input('# Fahrradfahrer Wien 2021')
+
+                chart_data_graz = pd.DataFrame([[graz_2019, wien_2019], [graz_2020, wien_2020], [graz_2021, wien_2021]], index=['2019', '2020', '2021'], columns=['Graz','Wien'])
+                print(chart_data_graz)
+
+                st.line_chart(chart_data_graz)
 
 
 
@@ -85,18 +121,13 @@ def main():
         #r"./logos/isv.png",
     ]
 
-    scenarios = [
-        "",
-        "Mobilitätsdaten-Allgemein",
-        "Mobiltätsadaten-Schiene",
-        "Auffahrt 2+1 RE",
-        "Auffahrt 3+1 RE",
-        "Verflechtungsstrecke 2+1",
-        "Abfahrt 2-1 RE",
-        "Baustelle 2-1",
-        "Baustelle 4+0",
-        "Tunnel 2-streifig"
-    ]
+    data_cat = ['Mobilitätsdaten - Allgemein',
+                'Mobilitätsdaten - Aktive Mobilität',
+                'Mobilitätsdaten - ÖPNV',
+                'Mobilitätsdaten - Flugverkehr',
+                'Energieverbrauch']
+
+
 
     gui = StatistikPV_Gui(
         apptitle="Prototypisches Dashboard BMK Monitoring Personenverkehr",
@@ -104,7 +135,7 @@ def main():
         appicon="./logos/bmk.png'",
         appcopyrightlogos=an_logo,
         appversion=__version__)
-    gui.create()
+    gui.create(data_cat)
 
 
 if __name__ == '__main__':
