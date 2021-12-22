@@ -4,6 +4,9 @@ import os
 
 import streamlit as st
 import pandas as pd
+import numpy as np
+
+from cross_section_data import Cross_Section_Data
 
 #from symul8_sumo_simulator import Symul8SumoSimulator
 #from symul8_vissim_simulator import Symul8VissimSimulator
@@ -26,9 +29,24 @@ class StatistikPV_Gui():
         self._appversion = appversion
         self._appcopyrightlogos = appcopyrightlogos
 
+    # def calc_cross_sections(self,year1,year2):
+    #     try:
+    #         cross_section_data = Cross_Section_Data(year1=year1, year2=year2)
+    #         cross_data = cross_section_data.read_cross_data()
+    #         cross_section_li = cross_section_data.cross_section_list(cross_data)
+    #         cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
+    #         return cross_section_selected
+    #     except:
+    #         st.write('No Data available')
+
+
+
     def create(self, data_cat):
 
         # default layout
+
+
+
         st.set_page_config(page_title=self._apptitle, page_icon=self._appicon, layout='wide', initial_sidebar_state='auto')
         if self._appbrandimage:
             for logo in self._appbrandimage:
@@ -45,41 +63,84 @@ class StatistikPV_Gui():
 
 
         datacat = st.sidebar.selectbox('Kategorie', data_cat)
-
         st.title(self._apptitle)
-
         if datacat == 'Mobilitätsdaten - Allgemein':
 
+            st.header('Querschnittsdaten-Berechnung')
+
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010,2025))
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010,2025))
+
+            cross_section_data = Cross_Section_Data(year1=st.session_state.year1, year2=st.session_state.year2)
+            global cross_data
+            st.session_state.cross_section_selected = False
+            st.session_state.driving_direction_select = False
+
+            if st.session_state.year2:
+                try:
+                    cross_data = cross_section_data.read_cross_data()
+                    cross_section_li = cross_section_data.cross_section_list(cross_data)
+                    st.session_state.cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
+                except:
+                    st.subheader(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
+
+            if st.session_state.cross_section_selected:
+                data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data,
+                                                                                           st.session_state.cross_section_selected)
+                st.session_state.driving_direction_select = st.selectbox("Fahrtrichtung wählen", driving_directions_li)
+                st.session_state.agg_level = st.selectbox("Auswertungsintervall",['Monatlich','Quartalsweise'])
+                st.session_state.weekday = st.selectbox("Wochentag", ['Montag-Freitag', 'Samstag','Sonn- und Feiertag'])
+
+                plot_data = st.button("Vergleich Querschnittsdaten anzeigen")
+
+                if plot_data:
+                    #data_to_plot = cross_section_data.
+                    fig = cross_section_data.plot_bar_chart(data_to_plot,
+                                                                st.session_state.driving_direction_select,
+                                                                st.session_state.agg_level,
+                                                                st.session_state.weekday)
+                    st.pyplot(fig)
 
 
-            st.header('Verkehrsleistung')
-            with st.expander('Verkehrsleistung'):
 
-                st.header('2019')
-                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2019 [P-km/a]')
-                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2019 [P-km/a]')
 
-                st.header('2020')
-                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2020 [P-km/a]')
-                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2020 [P-km/a]')
 
-                st.header('2021')
-                verkehrsleistung_car = st.number_input('Verkehrsleistung mIV 2021[P-km/a]')
-                verkehrsleistung_zug = st.number_input('Verkehrsleistung Zug 2021 [P-km/a]')
 
-            st.header('Modalsplit')
-            with st.expander('Modal-Split'):
-                st.header('2019')
-                ms_car = st.slider('Modal Split - PKW 2019[%]', 0.0, 100.0, step=0.1)
-                ms_train = st.slider('Modal Split - Zug 2019 [%]', 0.0, 100.0, step=0.1)
 
-                st.header('2020')
-                ms_car = st.slider('Modal Split - PKW 2020 [%]', 0.0, 100.0, step=0.1)
-                ms_train = st.slider('Modal Split - Zug 2020 [%]', 0.0, 100.0, step=0.1)
 
-                st.header('2021')
-                ms_car = st.slider('Modal Split - PKW 2021 [%]', 0.0, 100.0, step=0.1)
-                ms_train = st.slider('Modal Split - Zug 2021 [%]', 0.0, 100.0, step=0.1)
+
+
+
+
+
+                #calc_cross_data = st.button("Vergleich Querschnittsdaten anzeigen")
+
+                #agg_intervall = st.selectbox("Auswertungsintervall",['Monatlich','Quartalsweise'])
+                #weekday = st.selectbox("Wochentag", ['Montag-Freitag', 'Samstag','Sonn- und Feiertag'])
+                #calc_cross_data = st.button("Vergleich Querschnittsdaten anzeigen")
+                #if calc_cross_data:
+                   # data_to_plot = cross_section_data.select_crosssection(cross_data, cross_section_select)
+
+
+
+            #print(cross_data_select)
+            #print(calc_cross_data)
+
+
+
+            # st.header('Modalsplit')
+            # with st.expander('Modal-Split'):
+            #     st.header('2019')
+            #     ms_car = st.slider('Modal Split - PKW 2019[%]', 0.0, 100.0, step=0.1)
+            #     ms_train = st.slider('Modal Split - Zug 2019 [%]', 0.0, 100.0, step=0.1)
+            #
+            #     st.header('2020')
+            #     ms_car = st.slider('Modal Split - PKW 2020 [%]', 0.0, 100.0, step=0.1)
+            #     ms_train = st.slider('Modal Split - Zug 2020 [%]', 0.0, 100.0, step=0.1)
+            #
+            #     st.header('2021')
+            #     ms_car = st.slider('Modal Split - PKW 2021 [%]', 0.0, 100.0, step=0.1)
+            #     ms_train = st.slider('Modal Split - Zug 2021 [%]', 0.0, 100.0, step=0.1)
 
             st.header('Radverkehr')
             with st.expander('Radverkehr'):
@@ -97,7 +158,7 @@ class StatistikPV_Gui():
                 wien_2021 = st.number_input('# Fahrradfahrer Wien 2021')
 
                 chart_data_graz = pd.DataFrame([[graz_2019, wien_2019], [graz_2020, wien_2020], [graz_2021, wien_2021]], index=['2019', '2020', '2021'], columns=['Graz','Wien'])
-                print(chart_data_graz)
+                #print(chart_data_graz)
 
                 st.line_chart(chart_data_graz)
 
