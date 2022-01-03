@@ -40,7 +40,6 @@ class StatistikPV_Gui():
     #         st.write('No Data available')
 
 
-
     def create(self, data_cat):
 
         # default layout
