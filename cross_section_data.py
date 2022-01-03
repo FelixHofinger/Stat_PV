@@ -25,7 +25,6 @@ class Cross_Section_Data:
                        12: ('12', 'Dezember', 'Q4')}
 
     def read_cross_data(self):
-
         return_data = pd.DataFrame()
         for no, year in enumerate(self._comp_year):
             for month in self._month:
@@ -49,12 +48,8 @@ class Cross_Section_Data:
         return data_prep
 
     def select_drivingdirection(self, cross_data, cross_section):
-
         cross_section_data = cross_data.loc[cross_data['Zählstellenname'] == cross_section]
         driving_directions = cross_section_data['Richtung'].unique()
-
-        # data_to_plot = cross_data.loc[cross_data['Zählstellenname'] == cross_section]
-
         return cross_section_data, driving_directions
 
     def cross_section_list(self, data):
@@ -106,7 +101,6 @@ class Cross_Section_Data:
                             data_to_plot['Fahrzeugklasse'] == 'LKW'))].reset_index().iloc[0]['DTVMF']
 
                     y_max.append(round(max(car_data_y1 + hgv_data_y1, car_data_y2 + hgv_data_y2), -4))
-                    print(car_data_y1 + hgv_data_y1, car_data_y2 + hgv_data_y2)
 
 
                     bar_car_y1 = ax.bar(no1 + 1 - width / 2, int(car_data_y1), width, color='darkred',
@@ -145,7 +139,7 @@ class Cross_Section_Data:
                 ax.tick_params(axis='y', labelsize=13)
                 ax.set_ylabel('[DTV Werktag]', size=15)
                 ax.set_xlabel('Monat', size=15)
-                ax.set_ylim(0, y_max * 1.75)
+                ax.set_ylim(0, y_max * 1.25 + 7500)
                 ax.grid(True)
                 ax.set_title(f'Übersicht Verkehrsaufkommen', size=25, weight='bold', position=(0.5, 1.065))
                 ax.legend((bar_car_y1, bar_car_y2, bar_hgv_y1, bar_hgv_y2),
@@ -158,76 +152,72 @@ class Cross_Section_Data:
                 fig.savefig(path.join(f"./results", "first_barplot.pdf"))
                 return fig
 
+            elif agg_intervall == 'Quartalsweise':
+                for no1, quartal in enumerate(q_li):
+                        car_data_y1 = int(data_to_plot.loc[(
+                                (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year1) & (
+                                data_to_plot['Fahrzeugklasse'] == 'PKW'))].reset_index()['DTVMF'].mean())
 
+                        car_data_y2 = int(data_to_plot.loc[(
+                                (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year2) & (
+                                data_to_plot['Fahrzeugklasse'] == 'PKW'))].reset_index()['DTVMF'].mean())
+                        hgv_data_y1 = int(data_to_plot.loc[(
+                                (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year1) & (
+                                data_to_plot['Fahrzeugklasse'] == 'LKW'))].reset_index()['DTVMF'].mean())
+                        hgv_data_y2 = int(data_to_plot.loc[(
+                                (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year2) & (
+                                data_to_plot['Fahrzeugklasse'] == 'LKW'))].reset_index()['DTVMF'].mean())
 
-        elif agg_intervall == 'Quartalsweise':
-            print(agg_intervall)
-            for no1, quartal in enumerate(q_li):
-                    car_data_y1 = data_to_plot.loc[(
-                            (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year1) & (
-                            data_to_plot['Fahrzeugklasse'] == 'PKW'))].reset_index().iloc[0]['DTVMF']
-                    car_data_y2 = data_to_plot.loc[(
-                            (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year2) & (
-                            data_to_plot['Fahrzeugklasse'] == 'PKW'))].reset_index().iloc[0]['DTVMF']
-                    hgv_data_y1 = data_to_plot.loc[(
-                            (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year1) & (
-                            data_to_plot['Fahrzeugklasse'] == 'LKW'))].reset_index().iloc[0]['DTVMF']
-                    hgv_data_y2 = data_to_plot.loc[(
-                            (data_to_plot['Quartal'] == quartal) & (data_to_plot['Jahr'] == self._year2) & (
-                            data_to_plot['Fahrzeugklasse'] == 'LKW'))].reset_index().iloc[0]['DTVMF']
+                        y_max.append(round(max(car_data_y1 + hgv_data_y1, car_data_y2 + hgv_data_y2), -4))
 
-                    y_max.append(round(max(car_data_y1 + hgv_data_y1, car_data_y2 + hgv_data_y2), -4))
-                    print(car_data_y1 + hgv_data_y1, car_data_y2 + hgv_data_y2)
+                        bar_car_y1 = ax.bar(no1 + 1 - width / 2, int(car_data_y1), width, color='darkred',
+                                            edgecolor='black', linewidth=1.5)
+                        bar_hgv_y1 = ax.bar(no1 + 1 - width / 2, int(hgv_data_y1), width, color='lightblue',
+                                            edgecolor='black', linewidth=1.5, bottom=int(car_data_y1))
+                        bar_car_y2 = ax.bar(no1 + 1 + width / 2, int(car_data_y2), width, color='darkgreen',
+                                            edgecolor='black', linewidth=1.5)
+                        bar_hgv_y2 = ax.bar(no1 + 1 + width / 2, int(hgv_data_y2), width, color='darkorange',
+                                            edgecolor='black', linewidth=1.5, bottom=int(car_data_y2))
 
+                        plot_height = max((car_data_y1 + hgv_data_y1), (car_data_y2 + hgv_data_y2))
+                        if relative:
+                            abs_month_diff_car = int(car_data_y2) - int(car_data_y1)
+                            abs_month_diff_hgv = int(hgv_data_y2) - int(hgv_data_y1)
 
-                    bar_car_y1 = ax.bar(no1 + 1 - width / 2, int(car_data_y1), width, color='darkred',
-                                        edgecolor='black', linewidth=1.5)
-                    bar_hgv_y1 = ax.bar(no1 + 1 - width / 2, int(hgv_data_y1), width, color='lightblue',
-                                        edgecolor='black', linewidth=1.5, bottom=int(car_data_y1))
-                    bar_car_y2 = ax.bar(no1 + 1 + width / 2, int(car_data_y2), width, color='darkgreen',
-                                        edgecolor='black', linewidth=1.5)
-                    bar_hgv_y2 = ax.bar(no1 + 1 + width / 2, int(hgv_data_y2), width, color='darkorange',
-                                        edgecolor='black', linewidth=1.5, bottom=int(car_data_y2))
+                            abs_diff_car.append(abs_month_diff_car)
+                            abs_diff_hgv.append(abs_month_diff_hgv)
+                            total_car_y1.append(int(car_data_y1))
+                            total_hgv_y1.append(int(hgv_data_y1))
 
-                    plot_height = max((car_data_y1 + hgv_data_y1), (car_data_y2 + hgv_data_y2))
-                    if relative:
-                        abs_month_diff_car = int(car_data_y2) - int(car_data_y1)
-                        abs_month_diff_hgv = int(hgv_data_y2) - int(hgv_data_y1)
+                            rel_month_diff_car = round(((int(car_data_y2) - int(car_data_y1)) / int(car_data_y1)) * 100, 2)
+                            rel_month_diff_hgv = round(((int(hgv_data_y2) - int(hgv_data_y1)) / int(hgv_data_y1)) * 100, 2)
+                            self.barplot_autolabel(ax, bar_car_y1, f'PKW: {rel_month_diff_car} %', plot_height, 50)
+                            self.barplot_autolabel(ax, bar_car_y1, f'LKW: {rel_month_diff_hgv} %', plot_height,
+                                                   plot_height * 0.05)
 
-                        abs_diff_car.append(abs_month_diff_car)
-                        abs_diff_hgv.append(abs_month_diff_hgv)
-                        total_car_y1.append(int(car_data_y1))
-                        total_hgv_y1.append(int(hgv_data_y1))
+                #calc yearly diffrence
+                rel_car = round(sum(abs_diff_car)/sum(total_car_y1)*100,2)
+                rel_hgv = round(sum(abs_diff_hgv)/sum(total_hgv_y1)*100,2)
+                print(y_max)
+                y_max = max(y_max)
+                print(y_max,'second')
+                ax.set_xticks(np.arange(1, len(q_li) + 1))
+                ax.set_xticklabels(np.arange(1, len(q_li) + 1), size=13)
+                ax.tick_params(axis='y', labelsize=13)
+                ax.set_ylabel('[DTV Werktag]', size=15)
+                ax.set_xlabel('Quartal', size=15)
+                ax.set_ylim(0, y_max * 1.25 + 7200)
+                ax.grid(True)
+                ax.set_title(f'Übersicht Verkehrsaufkommen - Quartal', size=25, weight='bold', position=(0.5, 1.065))
+                ax.legend((bar_car_y1, bar_car_y2, bar_hgv_y1, bar_hgv_y2),
+                          ('PKW pro Tag - 2019', 'PKW pro Tag - 2020', 'LKW pro Tag - 2019', 'LKW pro Tag - 2020'), fontsize=15)
 
-                        rel_month_diff_car = round(((int(car_data_y2) - int(car_data_y1)) / int(car_data_y1)) * 100, 2)
-                        rel_month_diff_hgv = round(((int(hgv_data_y2) - int(hgv_data_y1)) / int(hgv_data_y1)) * 100, 2)
-                        self.barplot_autolabel(ax, bar_car_y1, f'PKW: {rel_month_diff_car} %', plot_height, 50)
-                        self.barplot_autolabel(ax, bar_car_y1, f'LKW: {rel_month_diff_hgv} %', plot_height,
-                                               plot_height * 0.05)
-
-            #calc yearly diffrence
-            rel_car = round(sum(abs_diff_car)/sum(total_car_y1)*100,2)
-            rel_hgv = round(sum(abs_diff_hgv)/sum(total_hgv_y1)*100,2)
-            print(y_max)
-            y_max = max(y_max)
-            print(y_max,'second')
-            ax.set_xticks(np.arange(1, len(month_li) + 1))
-            ax.set_xticklabels(np.arange(1, len(month_li) + 1), size=13)
-            ax.tick_params(axis='y', labelsize=13)
-            ax.set_ylabel('[DTV Werktag]', size=15)
-            ax.set_xlabel('Monat', size=15)
-            ax.set_ylim(0, y_max * 1.75)
-            ax.grid(True)
-            ax.set_title(f'Übersicht Verkehrsaufkommen - Quartal', size=25, weight='bold', position=(0.5, 1.065))
-            ax.legend((bar_car_y1, bar_car_y2, bar_hgv_y1, bar_hgv_y2),
-                      ('PKW pro Tag - 2019', 'PKW pro Tag - 2020', 'LKW pro Tag - 2019', 'LKW pro Tag - 2020'), fontsize=15)
-
-            ax.text(0.025, 0.95, f'Veränderung Verkehrsaufkommen PKW: {rel_car} %', horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=15, weight='bold')
-            ax.text(0.025, 0.90, f'Veränderung Verkehrsaufkommen LKW: {rel_hgv} %', horizontalalignment='left',
-                    verticalalignment='top', transform=ax.transAxes, fontsize=15, weight='bold')
-            fig.set_size_inches(18, 8)
-            fig.savefig(path.join(f"./results", "quartal_barplot.pdf"))
-            return fig
+                ax.text(0.025, 0.95, f'Veränderung Verkehrsaufkommen PKW: {rel_car} %', horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=15, weight='bold')
+                ax.text(0.025, 0.90, f'Veränderung Verkehrsaufkommen LKW: {rel_hgv} %', horizontalalignment='left',
+                        verticalalignment='top', transform=ax.transAxes, fontsize=15, weight='bold')
+                fig.set_size_inches(18, 8)
+                fig.savefig(path.join(f"./results", "quartal_barplot.pdf"))
+                return fig
 
 
 
