@@ -29,23 +29,9 @@ class StatistikPV_Gui():
         self._appversion = appversion
         self._appcopyrightlogos = appcopyrightlogos
 
-    # def calc_cross_sections(self,year1,year2):
-    #     try:
-    #         cross_section_data = Cross_Section_Data(year1=year1, year2=year2)
-    #         cross_data = cross_section_data.read_cross_data()
-    #         cross_section_li = cross_section_data.cross_section_list(cross_data)
-    #         cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
-    #         return cross_section_selected
-    #     except:
-    #         st.write('No Data available')
-
-
     def create(self, data_cat):
 
         # default layout
-
-
-
         st.set_page_config(page_title=self._apptitle, page_icon=self._appicon, layout='wide', initial_sidebar_state='auto')
         if self._appbrandimage:
             for logo in self._appbrandimage:
@@ -60,30 +46,26 @@ class StatistikPV_Gui():
         for logo in self._appcopyrightlogos:
             st.sidebar.image(logo)
 
-
         datacat = st.sidebar.selectbox('Kategorie', data_cat)
         st.title(self._apptitle)
         if datacat == 'Mobilitätsdaten - Allgemein':
-
-            st.header('Querschnittsdaten-Berechnung')
-
+            st.header('Querschnittsdaten-Berechnung (Segmentbezogen)')
             st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010,2025))
             st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010,2025))
-
             cross_section_data = Cross_Section_Data(year1=st.session_state.year1, year2=st.session_state.year2)
             global cross_data
             st.session_state.cross_section_selected = False
             st.session_state.driving_direction_select = False
-
             if st.session_state.year2:
                 try:
                     cross_data = cross_section_data.read_cross_data()
+
                     cross_section_li = cross_section_data.cross_section_list(cross_data)
                     st.session_state.cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
                 except:
                     st.subheader(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
-
             if st.session_state.cross_section_selected:
+                st.write(cross_data)
                 data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data,
                                                                                            st.session_state.cross_section_selected)
                 st.session_state.driving_direction_select = st.selectbox("Fahrtrichtung wählen", driving_directions_li)
@@ -93,12 +75,39 @@ class StatistikPV_Gui():
                 plot_data = st.button("Vergleich Querschnittsdaten anzeigen")
 
                 if plot_data:
-                    #data_to_plot = cross_section_data.
                     fig = cross_section_data.plot_bar_chart(data_to_plot,
                                                                 st.session_state.driving_direction_select,
                                                                 st.session_state.agg_level,
                                                                 st.session_state.weekday)
                     st.pyplot(fig)
+
+        #elif datacat == 'Mobilitätsdaten - Aktive Mobilität':
+            # Section Querschnittsdaten - Berechnung (Raumbezogen)
+            st.header('Querschnittsdaten - Berechnung (Raumbezogen)')
+            st.session_state.y1_raum = st.selectbox("Vergleichsjahr - 1 ", np.arange(2010, 2025))
+            st.session_state.y2_raum = st.selectbox("Vergleichsjahr - 2 ", np.arange(2010, 2025))
+            st.session_state.raumtyp = st.selectbox("Raumtyp", ['Gesamt', 'Wien', 'Großstadt (ohne Wien)',
+                                                                'zentrale Bezirke', 'peripherer Bezirk'])
+            st.session_state.bundesland = st.selectbox("Bundesland", ['Alle', 'Wien','Niederösterreich', 'Burgenland',
+                                                                      'Steiermark' , 'Oberösterreich', 'Salzburg',
+                                                                      'Kärnten', 'Tirol', 'Vorarlberg'])
+            st.session_state.agg_level_raum = st.selectbox("Auswertungsintervall", ['Monatlich', 'Quartalsweise'])
+            st.session_state.weekday_raum = st.selectbox("Wochentag", ['Montag-Freitag', 'Samstag', 'Sonn- und Feiertag'])
+            plot_data_raum = st.button("Vergleich Querschnittsdaten anzeigen")
+
+            cross_section_data_raum = Cross_Section_Data(year1=st.session_state.y1_raum, year2=st.session_state.y2_raum)
+            if plot_data_raum:
+                data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
+                fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
+                                                                st.session_state.agg_level_raum,
+                                                                st.session_state.weekday_raum)
+
+
+                st.write(data_to_plot_raum)
+                #fig = cross_section_data.plot_bar_chart(data_to_plot,
+                                                                #st.session_state.driving_direction_select,
+                                                                #st.session_state.agg_level,
+                                                                #st.session_state.weekday)
 
 
 
