@@ -100,55 +100,10 @@ class StatistikPV_Gui():
                 data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
                 fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
                                                                 st.session_state.agg_level_raum,
-                                                                st.session_state.weekday_raum)
+                                                                st.session_state.weekday_raum, relative=False)
 
+                st.pyplot(fig)
 
-                st.write(data_to_plot_raum)
-                #fig = cross_section_data.plot_bar_chart(data_to_plot,
-                                                                #st.session_state.driving_direction_select,
-                                                                #st.session_state.agg_level,
-                                                                #st.session_state.weekday)
-
-
-
-
-
-
-
-
-
-
-
-
-
-                #calc_cross_data = st.button("Vergleich Querschnittsdaten anzeigen")
-
-                #agg_intervall = st.selectbox("Auswertungsintervall",['Monatlich','Quartalsweise'])
-                #weekday = st.selectbox("Wochentag", ['Montag-Freitag', 'Samstag','Sonn- und Feiertag'])
-                #calc_cross_data = st.button("Vergleich Querschnittsdaten anzeigen")
-                #if calc_cross_data:
-                   # data_to_plot = cross_section_data.select_crosssection(cross_data, cross_section_select)
-
-
-
-            #print(cross_data_select)
-            #print(calc_cross_data)
-
-
-
-            # st.header('Modalsplit')
-            # with st.expander('Modal-Split'):
-            #     st.header('2019')
-            #     ms_car = st.slider('Modal Split - PKW 2019[%]', 0.0, 100.0, step=0.1)
-            #     ms_train = st.slider('Modal Split - Zug 2019 [%]', 0.0, 100.0, step=0.1)
-            #
-            #     st.header('2020')
-            #     ms_car = st.slider('Modal Split - PKW 2020 [%]', 0.0, 100.0, step=0.1)
-            #     ms_train = st.slider('Modal Split - Zug 2020 [%]', 0.0, 100.0, step=0.1)
-            #
-            #     st.header('2021')
-            #     ms_car = st.slider('Modal Split - PKW 2021 [%]', 0.0, 100.0, step=0.1)
-            #     ms_train = st.slider('Modal Split - Zug 2021 [%]', 0.0, 100.0, step=0.1)
 
             st.header('Radverkehr')
             with st.expander('Radverkehr'):

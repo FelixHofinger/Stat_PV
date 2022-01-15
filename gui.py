@@ -40,3 +40,4 @@ class Gui():
         #         # Add logos to the bottom (if any)
         for logo in self._appcopyrightlogos:
             st.sidebar.image(logo)
+
