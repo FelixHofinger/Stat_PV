@@ -248,7 +248,7 @@ class Cross_Section_Data:
                 ax.grid(True)
                 ax.set_title(f'Übersicht Verkehrsaufkommen - Quartal', size=25, weight='bold', position=(0.5, 1.065))
                 ax.legend((bar_car_y1, bar_car_y2, bar_hgv_y1, bar_hgv_y2),
-                          ('PKW pro Tag - 2019', 'PKW pro Tag - 2020', 'LKW pro Tag - 2019', 'LKW pro Tag - 2020'),
+                          (f'PKW pro Tag - {self._year1}', f'PKW pro Tag - {self._year2}', f'LKW pro Tag - {self._year1}', f'LKW pro Tag - {self._year2}'),
                           fontsize=15)
 
                 ax.text(0.025, 0.95, f'Veränderung Verkehrsaufkommen PKW: {rel_car} %', horizontalalignment='left',
