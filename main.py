@@ -58,15 +58,18 @@ class StatistikPV_Gui():
                 data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data, cross_section_dict[st.session_state.cross_section_selected])
                 st.session_state.driving_direction_select = st.selectbox("Fahrtrichtung wählen", driving_directions_li)
                 st.session_state.agg_level = st.selectbox("Auswertungsintervall", ['Monatlich','Quartalsweise'])
-                st.session_state.weekday = st.selectbox("DTV-Wert", ['Montag-Freitag', 'Samstag','Sonn- und Feiertag'])
-                plot_data = st.button("Vergleich Querschnittsdaten anzeigen")
+                st.session_state.weekday = st.selectbox("DTV-Wert", ['Montag-Freitag', 'Dienstag-Donnerstag',
+                                                                     'Montag-Sonntag', 'Sonn- und Feiertag', 'Montag',
+                                                                     'Samstag'])
 
+                plot_data = st.button("Vergleich Querschnittsdaten anzeigen")
                 if plot_data:
-                    fig = cross_section_data.plot_bar_chart(data_to_plot,
-                                                                st.session_state.driving_direction_select,
-                                                                st.session_state.agg_level,
-                                                                st.session_state.weekday)
-                    st.pyplot(fig)
+                    with st.spinner("Auswertung Querschnittsdaten läuft"):
+                        fig = cross_section_data.plot_bar_chart(data_to_plot,
+                                                                    st.session_state.driving_direction_select,
+                                                                    st.session_state.agg_level,
+                                                                    st.session_state.weekday)
+                        st.pyplot(fig)
 
         elif datacat == 'Querschnittsdaten (Raum)':
             st.header('Querschnittsdaten - Berechnung (Raumbezogen)')
@@ -78,15 +81,18 @@ class StatistikPV_Gui():
                                                                       'Steiermark' , 'Oberösterreich', 'Salzburg',
                                                                       'Kärnten', 'Tirol', 'Vorarlberg'])
             st.session_state.agg_level_raum = st.selectbox("Auswertungsintervall", ['Monatlich', 'Quartalsweise'])
-            st.session_state.weekday_raum = st.selectbox("DTV-Wert", ['Montag-Freitag', 'Samstag', 'Sonn- und Feiertag'])
+            st.session_state.weekday_raum = st.selectbox("DTV-Wert", ['Montag-Freitag', 'Dienstag-Donnerstag',
+                                                                     'Montag-Sonntag', 'Sonn- und Feiertag', 'Montag',
+                                                                     'Samstag'])
             plot_data_raum = st.button("Vergleich Querschnittsdaten anzeigen")
 
             cross_section_data_raum = Cross_Section_Data(year1=st.session_state.y1_raum, year2=st.session_state.y2_raum)
             if plot_data_raum:
-                data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
-                fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
-                                                                st.session_state.agg_level_raum,
-                                                                st.session_state.weekday_raum, relative=False)
+                with st.spinner("Auswertung Querschnittsdaten läuft"):
+                    data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
+                    fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
+                                                                    st.session_state.agg_level_raum,
+                                                                    st.session_state.weekday_raum, relative=False)
 
                 st.pyplot(fig)
 
@@ -173,8 +179,8 @@ def main():
     data_cat = ['Querschnittsdaten (Raum)',
                 'Querschnittsdaten (Segment)',
                 'Flugverkehr',
-                'städtischer Verkehr',
-                'aktive Mobilität']
+                'städtischer Verkehr (dummy)',
+                'aktive Mobilität (dummy)']
 
     gui = StatistikPV_Gui(
         apptitle="Prototypisches Dashboard BMK Monitoring Personenverkehr",
