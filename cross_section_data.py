@@ -93,6 +93,10 @@ class Cross_Section_Data:
 
     def cross_section_list(self, data):
         cross_section = data['Zählstellenname'].unique()
+
+        debug = 456
+
+
         return cross_section
 
     def barplot_autolabel(self, ax, bar, text, height, bottom_height):
