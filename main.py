@@ -40,20 +40,20 @@ class StatistikPV_Gui():
         # Querschnittsdaten (Segmentbezogen)
         if datacat == 'Querschnittsdaten (Segment)':
             st.header('Querschnittsdaten-Berechnung (Segmentbezogen)')
-            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025))
-            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010, 2025))
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025), index=9)
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010, 2025), index=10)
             cross_section_data = Cross_Section_Data(year1=st.session_state.year1, year2=st.session_state.year2)
             global cross_data
             st.session_state.cross_section_selected = False
             st.session_state.driving_direction_select = False
             if st.session_state.year2:
-                #try:
+                try:
                     cross_data = cross_section_data.read_cross_data()
 
                     cross_section_li, cross_section_dict = cross_section_data.cross_section_list(cross_data)
                     st.session_state.cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
-                #except:
-                    #st.subheader(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
+                except:
+                    st.warning(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
             if st.session_state.cross_section_selected:
                 data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data, cross_section_dict[st.session_state.cross_section_selected])
                 st.session_state.driving_direction_select = st.selectbox("Fahrtrichtung wählen", driving_directions_li)
@@ -73,8 +73,8 @@ class StatistikPV_Gui():
 
         elif datacat == 'Querschnittsdaten (Raum)':
             st.header('Querschnittsdaten - Berechnung (Raumbezogen)')
-            st.session_state.y1_raum = st.selectbox("Vergleichsjahr - 1 ", np.arange(2010, 2025))
-            st.session_state.y2_raum = st.selectbox("Vergleichsjahr - 2 ", np.arange(2010, 2025))
+            st.session_state.y1_raum = st.selectbox("Vergleichsjahr - 1 ", np.arange(2010, 2025), index=9)
+            st.session_state.y2_raum = st.selectbox("Vergleichsjahr - 2 ", np.arange(2010, 2025), index=10)
             st.session_state.raumtyp = st.selectbox("Raumtyp", ['Gesamt', 'Wien', 'Großstadt (ohne Wien)',
                                                                 'zentrale Bezirke', 'peripherer Bezirk'])
             st.session_state.bundesland = st.selectbox("Bundesland", ['Alle', 'Wien','Niederösterreich', 'Burgenland',
@@ -87,14 +87,18 @@ class StatistikPV_Gui():
             plot_data_raum = st.button("Vergleich Querschnittsdaten anzeigen")
 
             cross_section_data_raum = Cross_Section_Data(year1=st.session_state.y1_raum, year2=st.session_state.y2_raum)
+
             if plot_data_raum:
                 with st.spinner("Auswertung Querschnittsdaten läuft"):
-                    data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
-                    fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
-                                                                    st.session_state.agg_level_raum,
-                                                                    st.session_state.weekday_raum, relative=False)
+                    try:
+                        data_to_plot_raum = cross_section_data_raum.read_raum_cross_data(st.session_state.raumtyp, st.session_state.bundesland)
+                        fig = cross_section_data_raum.plot_bar_chart_raum(data_to_plot_raum,
+                                                                        st.session_state.agg_level_raum,
+                                                                        st.session_state.weekday_raum, relative=False)
+                        st.pyplot(fig)
+                    except:
+                        st.warning(f'Keine Daten für das Jahr {st.session_state.y1_raum} bzw. {st.session_state.y2_raum} vorhanden!')
 
-                st.pyplot(fig)
 
         elif datacat == 'Flugverkehr':
             st.header('Auswertung Flugverkehr')

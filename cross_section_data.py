@@ -102,7 +102,11 @@ class Cross_Section_Data:
                                   str(motorway_temp_data.iloc[0]['Zählstellen-']) + str('_') + \
                                   str(motorway_temp_data.iloc[0]['Zählstellenname'])]
             motorway_df = motorway_df.append(cross_section_name)
+
+
         dict_zaehlstelle = dict(zip(list(motorway_df[0]), list(cross_section)))
+
+        motorway_df.to_excel(path.join(f"./results", "zaehlstellenliste.xlsx"))
 
         return motorway_df, dict_zaehlstelle
 
@@ -119,9 +123,7 @@ class Cross_Section_Data:
     def plot_bar_chart(self, data_to_plot, driving_direction, agg_intervall, weekday):
         # ToDo: May add checkbox do streamlit plattform
         wd = self._weekday[weekday]
-
         relative = True
-
         data_to_plot = data_to_plot.loc[data_to_plot['Richtung'] == driving_direction]
         y_max = []
         abs_diff_car = []
@@ -275,8 +277,6 @@ class Cross_Section_Data:
 
     def calc_cross_veh_sum(self, data_y1, data_y2, wd):
         temp_data = pd.merge(data_y1, data_y2, on='Zählstellenname', how='inner')
-
-
 
         temp_data = temp_data[(temp_data.DTVMF_x != -1)]
         temp_data = temp_data[(temp_data.DTVMF_y != -1)]
