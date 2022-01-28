@@ -40,8 +40,8 @@ class StatistikPV_Gui():
         # Querschnittsdaten (Segmentbezogen)
         if datacat == 'Querschnittsdaten (Segment)':
             st.header('Querschnittsdaten-Berechnung (Segmentbezogen)')
-            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010,2025))
-            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010,2025))
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025))
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010, 2025))
             cross_section_data = Cross_Section_Data(year1=st.session_state.year1, year2=st.session_state.year2)
             global cross_data
             st.session_state.cross_section_selected = False
@@ -116,7 +116,24 @@ class StatistikPV_Gui():
 
                         st.pyplot(fig)
 
+        elif datacat == 'städtischer Verkehr':
+            st.header('Städtischer Verkehr')
 
+            st.header('2019')
+            oev_graz_2019 = st.number_input('# ÖV-Fahrgastzahlen Graz 2019')
+            oev_wien_2019 = st.number_input('# ÖV-Fahrgastzahlen Wien 2019')
+
+            st.header('2020')
+            oev_graz_2020 = st.number_input('# ÖV-Fahrgastzahlen Graz 2020')
+            oev_wien_2020 = st.number_input('# ÖV-Fahrgastzahlen Wien 2020')
+            st.header('2021')
+
+            oev_graz_2021 = st.number_input('# ÖV-Fahrgastzahlen Graz 2021')
+            oev_wien_2021 = st.number_input('# ÖV-Fahrgastzahlen Wien 2021')
+
+            chart_data_graz = pd.DataFrame([[oev_graz_2019, oev_wien_2019], [oev_graz_2020, oev_wien_2020], [oev_graz_2021, oev_wien_2021]], index=['2019', '2020', '2021'], columns=['Graz','Wien'])
+
+            st.line_chart(chart_data_graz)
 
 
 
@@ -126,18 +143,18 @@ class StatistikPV_Gui():
             st.header('Radverkehr')
 
             st.header('2019')
-            graz_2019 = st.number_input('# Fahrradfahrer Graz 2019')
-            wien_2019 = st.number_input('# Fahrradfahrer Wien 2019')
+            rf_graz_2019 = st.number_input('# Fahrradfahrer Graz 2019')
+            rf_wien_2019 = st.number_input('# Fahrradfahrer Wien 2019')
 
             st.header('2020')
-            graz_2020 = st.number_input('# Fahrradfahrer Graz 2020')
-            wien_2020 = st.number_input('# Fahrradfahrer Wien 2020')
+            rf_graz_2020 = st.number_input('# Fahrradfahrer Graz 2020')
+            rf_wien_2020 = st.number_input('# Fahrradfahrer Wien 2020')
             st.header('2021')
 
-            graz_2021 = st.number_input('# Fahrradfahrer Graz 2021')
-            wien_2021 = st.number_input('# Fahrradfahrer Wien 2021')
+            rf_graz_2021 = st.number_input('# Fahrradfahrer Graz 2021')
+            rf_wien_2021 = st.number_input('# Fahrradfahrer Wien 2021')
 
-            chart_data_graz = pd.DataFrame([[graz_2019, wien_2019], [graz_2020, wien_2020], [graz_2021, wien_2021]], index=['2019', '2020', '2021'], columns=['Graz','Wien'])
+            chart_data_graz = pd.DataFrame([[rf_graz_2019, rf_wien_2019], [rf_graz_2020, rf_wien_2020], [rf_graz_2021, rf_wien_2021]], index=['2019', '2020', '2021'], columns=['Graz','Wien'])
             #print(chart_data_graz)
             st.line_chart(chart_data_graz)
 
@@ -153,8 +170,8 @@ def main():
         r"./logos/TU_Graz.png",  # TUGraz
         #r"./logos/isv.png",
     ]
-    data_cat = ['Querschnittsdaten (Segment)',
-                'Querschnittsdaten (Raum)',
+    data_cat = ['Querschnittsdaten (Raum)',
+                'Querschnittsdaten (Segment)',
                 'Flugverkehr',
                 'städtischer Verkehr',
                 'aktive Mobilität']
