@@ -102,8 +102,8 @@ class StatistikPV_Gui():
 
         elif datacat == 'Flugverkehr':
             st.header('Auswertung Flugverkehr')
-            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025))
-            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010, 2025))
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025), index=9)
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2010, 2025), index=10)
             st.session_state.airport = st.selectbox("Flughafen", ['Alle', 'Wien', 'Graz', 'Linz', 'Salzburg', 'Innsbruck', 'Klagenfurt'])
             st.session_state.indicator = st.selectbox("Indikator", ['Anzahl Passagiere', 'Anzahl Flüge', 'Flugkilometer', 'Personenkilometer'])
             st.session_state.agg_level_raum = st.selectbox("Auswertungsintervall", ['Quartalsweise', 'Monatlich (nicht untersützt)'])
@@ -126,7 +126,7 @@ class StatistikPV_Gui():
 
                         st.pyplot(fig)
 
-        elif datacat == 'städtischer Verkehr':
+        elif datacat == 'städtischer Verkehr (dummy)':
             st.header('Städtischer Verkehr')
 
             st.header('2019')
@@ -146,10 +146,7 @@ class StatistikPV_Gui():
             st.line_chart(chart_data_graz)
 
 
-
-
-
-        elif datacat == 'aktive Mobilität':
+        elif datacat == 'aktive Mobilität (dummy)':
             st.header('Radverkehr')
 
             st.header('2019')
