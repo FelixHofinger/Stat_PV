@@ -40,8 +40,8 @@ class StatistikPV_Gui():
         # Querschnittsdaten (Segmentbezogen)
         if datacat == 'Querschnittsdaten (Segment)':
             st.header('Querschnittsdaten-Berechnung (Segmentbezogen)')
-            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2015, 2023), index=5)
-            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2015, 2023), index=6)
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2015, 2023), index=4)
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2015, 2023), index=5)
             cross_section_data = Cross_Section_Data(year1=st.session_state.year1, year2=st.session_state.year2)
             global cross_data
             st.session_state.cross_section_selected = False
@@ -73,8 +73,8 @@ class StatistikPV_Gui():
 
         elif datacat == 'Querschnittsdaten (Raum)':
             st.header('Querschnittsdaten - Berechnung (Raumbezogen)')
-            st.session_state.y1_raum = st.selectbox("Vergleichsjahr - 1 ", np.arange(2015, 2023), index=5)
-            st.session_state.y2_raum = st.selectbox("Vergleichsjahr - 2 ", np.arange(2015, 2023), index=6)
+            st.session_state.y1_raum = st.selectbox("Vergleichsjahr - 1 ", np.arange(2015, 2023), index=4)
+            st.session_state.y2_raum = st.selectbox("Vergleichsjahr - 2 ", np.arange(2015, 2023), index=5)
             st.session_state.raumtyp = st.selectbox("Raumtyp", ['Gesamt', 'Wien', 'Großstadt (ohne Wien)',
                                                                 'zentrale Bezirke', 'peripherer Bezirk'])
             st.session_state.bundesland = st.selectbox("Bundesland", ['Alle', 'Wien','Niederösterreich', 'Burgenland',
@@ -101,8 +101,8 @@ class StatistikPV_Gui():
 
         elif datacat == 'Flugverkehr':
             st.header('Auswertung Flugverkehr')
-            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2015, 2023), index=5)
-            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2015, 2023), index=6)
+            st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2015, 2023), index=4)
+            st.session_state.year2 = st.selectbox("Vergleichsjahr - 2", np.arange(2015, 2023), index=5)
             st.session_state.airport = st.selectbox("Flughafen", ['Alle', 'Wien', 'Graz', 'Linz', 'Salzburg', 'Innsbruck', 'Klagenfurt'])
             st.session_state.indicator = st.selectbox("Indikator", ['Anzahl Passagiere', 'Anzahl Flüge', 'Flugkilometer', 'Personenkilometer'])
             st.session_state.agg_level_raum = st.selectbox("Auswertungsintervall", ['Quartalsweise', 'Monatlich (nicht untersützt)'])
