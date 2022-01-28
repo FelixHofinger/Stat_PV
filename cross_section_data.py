@@ -34,11 +34,10 @@ class Cross_Section_Data:
                     f"./cross_section_data/{str(year)[-2:]}{self._month[month][0]}_ASFINAG_Verkehrsstatistik_BW.xls",
                     sheet_name='Daten')
                 cross_data = self.prep_data(cross_data, month, year)
-
                 return_data = return_data.append(cross_data)
 
-        zählstellen = pd.DataFrame(cross_data['Zählstellenname'].unique())
-        zählstellen.to_csv(path.join("C:\\Users\\hofife\\Desktop", "Zaehlstellen.csv"), encoding='utf-8-sig')
+        #zaehlstellen = pd.DataFrame(cross_data['Zählstellenname'].unique())
+        #zaehlstellen.to_csv(path.join("C:\\Users\\hofife\\Desktop", "Zaehlstellen.csv"), encoding='utf-8-sig')
 
         return return_data
 
