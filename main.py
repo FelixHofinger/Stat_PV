@@ -47,15 +47,15 @@ class StatistikPV_Gui():
             st.session_state.cross_section_selected = False
             st.session_state.driving_direction_select = False
             if st.session_state.year2:
-                try:
+                #try:
                     cross_data = cross_section_data.read_cross_data()
 
-                    cross_section_li = cross_section_data.cross_section_list(cross_data)
+                    cross_section_li, cross_section_dict = cross_section_data.cross_section_list(cross_data)
                     st.session_state.cross_section_selected = st.selectbox("Querschnitt wählen", cross_section_li)
-                except:
-                    st.subheader(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
+                #except:
+                    #st.subheader(f'Keine Daten für das Jahr {st.session_state.year1} bzw. {st.session_state.year2} vorhanden!')
             if st.session_state.cross_section_selected:
-                data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data, st.session_state.cross_section_selected)
+                data_to_plot, driving_directions_li = cross_section_data.select_drivingdirection(cross_data, cross_section_dict[st.session_state.cross_section_selected])
                 st.session_state.driving_direction_select = st.selectbox("Fahrtrichtung wählen", driving_directions_li)
                 st.session_state.agg_level = st.selectbox("Auswertungsintervall", ['Monatlich','Quartalsweise'])
                 st.session_state.weekday = st.selectbox("DTV-Wert", ['Montag-Freitag', 'Samstag','Sonn- und Feiertag'])

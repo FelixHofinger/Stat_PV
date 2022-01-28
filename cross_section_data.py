@@ -93,11 +93,17 @@ class Cross_Section_Data:
 
     def cross_section_list(self, data):
         cross_section = data['Zählstellenname'].unique()
+        motorway_df = pd.DataFrame()
+        mp_df = pd.DataFrame
+        for mp in cross_section:
+            motorway_temp_data = data[data['Zählstellenname'] == mp]
+            cross_section_name = [str(motorway_temp_data.iloc[0]['Autobahn']) + str('_') + \
+                                  str(motorway_temp_data.iloc[0]['Zählstellen-']) + str('_') + \
+                                  str(motorway_temp_data.iloc[0]['Zählstellenname'])]
+            motorway_df = motorway_df.append(cross_section_name)
+        dict_zaehlstelle = dict(zip(list(motorway_df[0]), list(cross_section)))
 
-        debug = 456
-
-
-        return cross_section
+        return motorway_df, dict_zaehlstelle
 
     def barplot_autolabel(self, ax, bar, text, height, bottom_height):
         """Attach a text label above each bar in *rects*, displaying its height."""
