@@ -99,7 +99,6 @@ class StatistikPV_Gui():
                     except:
                         st.warning(f'Keine Daten für das Jahr {st.session_state.y1_raum} bzw. {st.session_state.y2_raum} vorhanden!')
 
-
         elif datacat == 'Flugverkehr':
             st.header('Auswertung Flugverkehr')
             st.session_state.year1 = st.selectbox("Vergleichsjahr - 1", np.arange(2010, 2025), index=9)

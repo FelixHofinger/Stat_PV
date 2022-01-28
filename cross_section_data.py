@@ -187,7 +187,7 @@ class Cross_Section_Data:
             ax.set_xticks(np.arange(1, len(month_li) + 1))
             ax.set_xticklabels(np.arange(1, len(month_li) + 1), size=13)
             ax.tick_params(axis='y', labelsize=13)
-            ax.set_ylabel('[DTV Werktag]', size=15)
+            ax.set_ylabel(f'DTV {weekday}', size=15)
             ax.set_xlabel('Monat', size=15)
             ax.set_ylim(0, y_max * 1.25 + 7500)
             ax.grid(True)
