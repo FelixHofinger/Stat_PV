@@ -112,7 +112,6 @@ class StatistikPV_Gui():
                 with st.spinner("Auswertung Flugverkehrsdaten läuft"):
                     air_traffic = Air_Traffic_Data()
                     data_dict_type, data_dict_year = air_traffic.read_air_tr_data(st.session_state.airport)
-                    print(st.session_state.year1, type(st.session_state.year1), data_dict_year.keys())
 
                     if st.session_state.year1 not in data_dict_year.keys() or st.session_state.year2 not in data_dict_year.keys():
                         st.warning('Jahr ist nicht in Datensatz enthalten - Können im Statistik Austria Statcube heruntergeladen werden')
@@ -123,6 +122,7 @@ class StatistikPV_Gui():
                                                            st.session_state.indicator,
                                                            st.session_state.airport)
 
+                        st.info('Exemplarische Testanwendung - Die Daten beziehen sich nur auf den Binnenflugverkehr in Österreich!')
                         st.pyplot(fig)
 
         elif datacat == 'städtischer Verkehr (dummy)':
