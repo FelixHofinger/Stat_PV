@@ -171,7 +171,7 @@ class Air_Traffic_Data:
         ax.set_xlabel('Quartal', size=15)
         ax.set_ylim(0, y_max * 1.25)
         ax.grid(True)
-        ax.set_title(f'Übersicht Verkehrsaufkommen', size=25, weight='bold', position=(0.5, 1.065))
+        ax.set_title(f'Auswertung Flugverkehr', size=25, weight='bold', position=(0.5, 1.065))
         ax.legend((bar_1, bar_2),
                 (f'{indicator} - {year1}', f'{indicator} - {year2}'), fontsize=15)
         rel = round(sum(abs_diff) / sum(total) * 100, 2)
